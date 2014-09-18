@@ -12,8 +12,6 @@ program test
   real :: xclose, yclose, zclose
 
   call cgal_polyhedron_read(ptr, "X.off")
-
-  call cgal_polyhedron_read(ptr, "X.off")
   
   call cgal_polyhedron_bbox(ptr, xmin,ymin,zmin, xmax,ymax,zmax)
   
