@@ -1,5 +1,3 @@
-!(C) Vladimir Fuka 2014
-!GNU GPL license v3
 module CGAL_Polyhedra
   use iso_c_binding
   
@@ -20,11 +18,12 @@ module CGAL_Polyhedra
   
   interface
   
-    subroutine polyhedron_from_file(ptree, fname, verbose, ierr) bind(C,name="polyhedron_from_file")
+    subroutine polyhedron_from_file(ptree, fname, verbose, infinity_outside, ierr) bind(C,name="polyhedron_from_file")
       import
       type(c_ptr),intent(out) :: ptree
       character(kind=c_char),intent(in) :: fname(*)
-      integer(c_int),value :: verbose !avoid bool in C++, not equal to c_bool
+      logical(c_bool),value :: verbose
+      logical(c_bool),value :: infinity_outside
       integer(c_int),intent(out) :: ierr
     end subroutine
     
@@ -85,13 +84,17 @@ module CGAL_Polyhedra
 contains
 
 
-  subroutine cgal_polyhedron_read(ptree, fname)
+  subroutine cgal_polyhedron_read(ptree, fname, infinity_outside)
     type(c_ptr),intent(out) :: ptree
     character(*),intent(in) :: fname
+    logical, optional :: infinity_outside
     integer(c_int) :: ierr
-    integer :: imaster
+    logical(c_bool) :: inf_out
     
-    call polyhedron_from_file(ptree, fname//c_null_char, 1, ierr)
+    inf_out = .true.
+    if (present(infinity_outside)) inf_out = logical(infinity_outside, c_bool)
+
+    call polyhedron_from_file(ptree, trim(fname)//c_null_char, logical(.true., c_bool), inf_out, ierr)
     
     if (ierr==1) then
       write (*,*) "Error reading file "//fname//", it appears to be empty."
