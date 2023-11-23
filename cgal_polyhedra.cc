@@ -9,8 +9,6 @@
 #include <optional>
 
 #include <CGAL/IO/Polyhedron_iostream.h>
-#include <iostream>
-#include <list>
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/AABB_tree.h>
